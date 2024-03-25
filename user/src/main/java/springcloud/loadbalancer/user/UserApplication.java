@@ -52,7 +52,7 @@ public class UserApplication {
 			.uri("http://say-hello/greeting")
 			.retrieve()
 			.bodyToMono(String.class)
-			.map(greeting -> String.format("$s, $s!", greeting, name));
+			.map(greeting -> String.format("%s, %s!", greeting, name));
 	}
 
 }
