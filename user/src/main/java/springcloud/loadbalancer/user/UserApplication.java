@@ -1,5 +1,7 @@
 package springcloud.loadbalancer.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
@@ -13,6 +15,8 @@ import reactor.core.publisher.Mono;
 @RestController
 @SpringBootApplication
 public class UserApplication {
+
+	private static Logger log = LoggerFactory.getLogger(UserApplication.class);
 
 	private final WebClient.Builder loadBalancedWebClientBuilder;
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
@@ -29,6 +33,7 @@ public class UserApplication {
 
 	@RequestMapping("/hi")
 	public Mono<String> hi(@RequestParam(value = "name", defaultValue = "Mary") String name) {
+		log.info("received name: " + name);
 		return loadBalancedWebClientBuilder.build()
 			.get()
 			.uri("http://say-hello/greeting")
@@ -39,6 +44,7 @@ public class UserApplication {
 
 	@RequestMapping("/hello")
 	public Mono<String> hello(@RequestParam(value = "name", defaultValue = "John") String name) {
+		log.info("received name: " + name);
 		return WebClient.builder()
 			.filter(lbFunction)
 			.build()
